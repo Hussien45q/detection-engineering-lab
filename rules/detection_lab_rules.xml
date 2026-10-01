@@ -19,6 +19,18 @@
     </mitre>
   </rule>
 
+  <!-- T1059.001 (companion) - built-in rule 92057 claims encoded PowerShell launched
+       from another PowerShell process first, so 100100 never sees that event.
+       Chaining to 92057 with if_sid makes the lab rule fire in that case too. -->
+  <rule id="100106" level="12">
+    <if_sid>92057</if_sid>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)\s-e[a-z]*\s+[A-Za-z0-9+/=]{20,}</field>
+    <description>Encoded PowerShell command executed on $(win.system.computer) (chained to built-in 92057)</description>
+    <mitre>
+      <id>T1059.001</id>
+    </mitre>
+  </rule>
+
   <!-- T1105 - certutil used to download a file (LOLBin) -->
   <rule id="100101" level="12">
     <if_group>sysmon_event1</if_group>
