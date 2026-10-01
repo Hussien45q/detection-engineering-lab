@@ -21,10 +21,10 @@ sudo curl -sL -o /var/ossec/etc/rules/detection_lab_rules.xml \
   https://raw.githubusercontent.com/Hussien45q/detection-engineering-lab/main/rules/detection_lab_rules.xml
 sudo chown wazuh:wazuh /var/ossec/etc/rules/detection_lab_rules.xml
 sudo chmod 660 /var/ossec/etc/rules/detection_lab_rules.xml
-sudo /var/ossec/bin/wazuh-analysd -t && sudo systemctl restart wazuh-manager
+sudo /var/ossec/bin/wazuh-analysisd -t && sudo systemctl restart wazuh-manager
 ```
 
-`wazuh-analysd -t` checks the rule file for mistakes. If it prints an error, the manager is **not** restarted. Send a screenshot of the error.
+`wazuh-analysisd -t` checks the rule file for mistakes. If it prints an error, the manager is **not** restarted. Send a screenshot of the error.
 
 ## Step 2 – Run the attack simulations on Windows Victim
 
