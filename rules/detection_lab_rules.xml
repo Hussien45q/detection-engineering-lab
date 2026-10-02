@@ -85,4 +85,42 @@
     </mitre>
   </rule>
 
+  <!-- ===================== Week 3 ===================== -->
+
+  <!-- T1033 - Account discovery: whoami asking for groups or privileges -->
+  <rule id="100107" level="6">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\whoami\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)\s/(all|priv|groups)\b</field>
+    <description>Discovery: whoami used to list groups or privileges on $(win.system.computer)</description>
+    <mitre>
+      <id>T1033</id>
+    </mitre>
+  </rule>
+
+  <!-- T1069.001 - Permission group discovery: listing local administrators -->
+  <rule id="100108" level="8">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\net1?\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)\slocalgroup\s+"?administrators</field>
+    <description>Discovery: local Administrators group listed with net on $(win.system.computer)</description>
+    <mitre>
+      <id>T1069.001</id>
+    </mitre>
+  </rule>
+
+  <!-- T1547.001 - Run key persistence pointing to a user-writable folder.
+       Built-in rule 92300 matches Run key changes but is level 0 (no alert),
+       so this child rule raises an alert when the new entry points somewhere
+       attackers commonly drop files. Backslashes arrive doubled in Wazuh's
+       eventchannel fields, hence \\+ . -->
+  <rule id="100109" level="12">
+    <if_sid>92300</if_sid>
+    <field name="win.eventdata.details" type="pcre2">(?i)\\+(users\\+public|appdata|temp|programdata)\\+</field>
+    <description>Persistence: Run key entry points to a user-writable folder on $(win.system.computer)</description>
+    <mitre>
+      <id>T1547.001</id>
+    </mitre>
+  </rule>
+
 </group>
