@@ -32,6 +32,8 @@ flowchart LR
 
 **Test run 1 (Oct 2026): 5 of 6 techniques detected by custom rules; the 6th was prevented by the endpoint's antivirus.**
 
+![Wazuh Threat Hunting dashboard after the test run: 11 alerts from the lab's custom rules, 5 at level 12 or above, covering 5 MITRE ATT&CK techniques](screenshots/dashboard-overview.png)
+
 ## Findings from testing
 
 1. **Rule precedence matters.** The first run, rule 100100 never fired. The alert log showed the event had been claimed by Wazuh's built-in rule **92057** ("Powershell.exe spawned a powershell process which executed a base64 encoded command"). Wazuh evaluates child rules in load order and only the first match continues, so built-in rules shadow later custom rules on the same parent. **Fix:** companion rule **100106**, chained to 92057 with `<if_sid>`, so the lab's detection fires whenever the built-in one does.
