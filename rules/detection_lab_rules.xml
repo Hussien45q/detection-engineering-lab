@@ -96,6 +96,7 @@
     <mitre>
       <id>T1033</id>
     </mitre>
+    <group>lab_discovery,</group>
   </rule>
 
   <!-- T1069.001 - Permission group discovery: listing local administrators -->
@@ -107,6 +108,7 @@
     <mitre>
       <id>T1069.001</id>
     </mitre>
+    <group>lab_discovery,</group>
   </rule>
 
   <!-- T1547.001 - Run key persistence pointing to a user-writable folder.
@@ -120,6 +122,46 @@
     <description>Persistence: Run key entry points to a user-writable folder on $(win.system.computer)</description>
     <mitre>
       <id>T1547.001</id>
+    </mitre>
+  </rule>
+
+  <!-- ===================== Week 4 ===================== -->
+
+  <!-- Correlation - several discovery commands on the same host in a short time.
+       One whoami is normal admin work; a burst of them together with group
+       enumeration is what an intruder does right after landing on a machine. -->
+  <rule id="100110" level="12" frequency="3" timeframe="120">
+    <if_matched_group>lab_discovery</if_matched_group>
+    <same_location />
+    <description>Discovery burst: 3+ discovery commands within 2 minutes on the same host</description>
+    <mitre>
+      <id>T1033</id>
+      <id>T1069.001</id>
+    </mitre>
+  </rule>
+
+</group>
+
+<!-- Agent health. A silent agent is a blind spot (Week 3, finding 6), and stopping
+     the security agent is a classic defense-evasion step. Built-in rules 504/506
+     only alert at level 3, so these children raise them. -->
+<group name="local_detections,agent_health,">
+
+  <!-- Agent stopped (graceful service stop) - T1562.001 Impair Defenses -->
+  <rule id="100112" level="10">
+    <if_sid>506</if_sid>
+    <description>Wazuh agent stopped on an endpoint - possible defense evasion or maintenance</description>
+    <mitre>
+      <id>T1562.001</id>
+    </mitre>
+  </rule>
+
+  <!-- Agent disconnected (stopped reporting) -->
+  <rule id="100111" level="10">
+    <if_sid>504</if_sid>
+    <description>Wazuh agent disconnected - endpoint is no longer reporting (visibility gap)</description>
+    <mitre>
+      <id>T1562.001</id>
     </mitre>
   </rule>
 
